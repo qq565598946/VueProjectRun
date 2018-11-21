@@ -130,14 +130,7 @@
                 "id": this.$route.query.id
               }
             }), {
-              headers: {
-                'content-type': 'application/json',
-                'accessToken': this.$route.query.accessToken,
-                'applyID': this.$route.query.appID,
-                'requestType': "app",
-                'secretKey': this.$route.query.appSecretKey,
-                'userInfo': null
-              }
+              headers:this.COMMON.headerJson
             }).then(function (response) {
             if (response.data.code == 200) {
               console.log(response);
@@ -161,14 +154,7 @@
                 "size": size
               }
             }), {
-              headers: {
-                'content-type': 'application/json',
-                'accessToken': this.$route.query.accessToken,
-                'applyID': this.$route.query.appID,
-                'requestType': "app",
-                'secretKey': this.$route.query.appSecretKey,
-                'userInfo': null
-              }
+              headers:this.COMMON.headerJson
             }).then(function (response) {
             if (response.data.code == 200) {
               _this.tableData = response.data.data.records;
@@ -186,14 +172,7 @@
               "accessToken": this.$route.query.accessToken,
               "projectId":this.$route.query.id
             }), {
-              headers: {
-                'content-type': 'application/json',
-                'accessToken': this.$route.query.accessToken,
-                'applyID': this.$route.query.appID,
-                'requestType': "app",
-                'secretKey': this.$route.query.appSecretKey,
-                'userInfo': null
-              }
+              headers:this.COMMON.headerJson
             }).then(function (response) {
             if (response.data.code == 200) {
               _this.solutionID = response.data.data.id;

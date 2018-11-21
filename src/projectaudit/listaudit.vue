@@ -43,7 +43,6 @@
 </template>
 
 <script>
-
     export default {
         name: "listaudit",
         data(){
@@ -55,11 +54,11 @@
             currentPage:1,
             newarr: [],
             msg: "审核列表",
-            solution: "xinghuo-apaas-pms-solution/pms/solution/v1",  //solution = "xinghuo-apaas-pms-solution-dev/pms/solution/v1"
-            appID: "ed2c076f86834ee0bc3dfa54d0f2daf7",
-            appSecretKey: "D82AAE335BDFB4FDDB80BDDA20B064C6",
-            GetaWay_url: "http://172.29.3.76:9238/szga/",
-            accessToken:sessionStorage.getItem("access_token"),
+            solution: this.COMMON.solution,  //solution = "xinghuo-apaas-pms-solution-dev/pms/solution/v1"
+            appID: this.COMMON.appID,
+            appSecretKey: this.COMMON.appSecretKey,
+            GetaWay_url: this.COMMON.GetaWay_url,
+            accessToken:this.COMMON.accessToken,
             listarr:[],
             total: null,
             pagecur: null,
@@ -91,14 +90,7 @@
                 "size": size
               }
             }), {
-              headers: {
-                'content-type': 'application/json',
-                'accessToken': this.accessToken,
-                'applyID': this.appID,
-                'requestType': "app",
-                'secretKey': this.appSecretKey,
-                'userInfo': null
-              }
+              headers:this.COMMON.headerJson
             }).then(function (response) {
             if (response.data.code == 200) {
               _this.tableData = response.data.data.records;
@@ -142,7 +134,6 @@
                 appSecretKey: this.appSecretKey,
                 GetaWay_url:this.GetaWay_url
               }
-
             })
           }
 

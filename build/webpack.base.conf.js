@@ -25,6 +25,9 @@ module.exports = {
   entry: {
     app: './src/main.js'
   },
+  externals: {
+    'BMap': 'BMap'
+  },
   plugins: [
     new webpack.ProvidePlugin({  //引入Jquery
       $: 'jquery',
@@ -46,9 +49,10 @@ module.exports = {
       '@': resolve('src'),
     }
   },
+
   module: {
     rules: [
-      ...(config.dev.useEslint ? [createLintingRule()] : []),
+      // ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -90,6 +94,12 @@ module.exports = {
       {
         test: /\\\\\\\\.(eot|woff|woff2|ttf)([\\\\\\\\?]?.*)$/,
         loader: "file"
+      },
+      {
+
+        test: /\.less$/,
+
+        loader: "style-loader!css-loader!less-loader"
       }
     ]
   },

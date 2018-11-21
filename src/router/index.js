@@ -12,10 +12,12 @@ import projectapply from '@/projectapply/projectapply'
 import pmsetdoc from '@/components/pmsetdoc'
 import projectProgramme from '@/projectapply/projectProgramme'
 import myscroll from '@/components/myscroll'
+import map from '@/map/map'
+import echart from '@/echart/echart'
 
 Vue.use(Router)
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '/',
@@ -80,6 +82,16 @@ export default new Router({
       path: '/ProjectAuditDes',
       name: 'ProjectAuditDes',
       component: ProjectAuditDes
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: map
+    },
+    {
+      path: '/echart',
+      name: 'echart',
+      component: echart
     }
   ]
 })

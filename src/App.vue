@@ -3,7 +3,7 @@
   <div id="app">
     <div class="pc-nav">
       <ul>
-        <li v-for="(navarr,index) in nav"  @click="tabItemClick(index)"  :class="{active:active}">
+        <li v-for="(navarr,index) in nav"  @click="tabItemClick(index)"  :class="{'active': index == active}">
           <router-link :to='navarr.url'>{{navarr.name}}</router-link>
         </li>
       </ul>
@@ -42,19 +42,26 @@ export default {
   data () {
     return {
       listdata:[],
-      tabIndex: 0,
-      active:false,
+      tabIndex: "-1",
+      active:0,
       nav:[{
         name:"项目列表",
         url:'/projectlist',
       },{
         name:"项目审核",
         url:"/listaudit",
+      },{
+        name:"地图",
+        url:"/map",
+      },{
+        name:"Echart",
+        url:"/echart",
       }
       ]
     }
   },methods:{
     tabItemClick(index){
+    this.active = index;
 
     },
     getList(){
@@ -72,6 +79,19 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row)
+    }
+  },
+  watch: {
+    $route: {
+      handler: function(val, oldVal){
+        console.log(val);
+        if(val.path == '/projectlist'){
+            console.log("项目列表")
+        }
+
+      },
+      // 深度观察监听
+      deep: true
     }
   }
   ,created:function () {
@@ -136,7 +156,7 @@ i,label{display: inline-block}
 
 .pc-nav ul li.active{
 
-  background:#CCCCCC;
+  background:#ececec;
   border-bottom: 2px solid #0e9aef;
 }
 /*.pc-nav ul li a:hover{*/

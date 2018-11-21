@@ -3,6 +3,8 @@
   <div class="projectlist">
     <!--<p v-if="errortxt.length>1">{{errortxt}}</p>-->
     <el-row style="position: relative">
+      <!--<el-button type="primary"  @click="clickParent()">调用子组件方法</el-button>-->
+      <!--<el-input   placeholder="接收子组件参数" v-model = "msg"></el-input>-->
     <div class="addbox"><el-button type="primary" @click="apply()">添加</el-button></div>
     <el-col :span="8" v-for="listcon in listarr" class="listclass">
       <el-button @click="handleEdit(listcon.id,listcon.auditStatus)">
@@ -35,7 +37,7 @@
         :page-sizes="[10,30,40]"
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+        :total="total" v-if="showpage">
       </el-pagination>
     </div>
     <!--<el-table :data="listarr" style="width: 100%">-->
@@ -54,40 +56,58 @@
       <!--</el-table-column>-->
     <!--</el-table>-->
 
+<!--父子传值-->
+    <!--<projectapply  :realshow="realshow" @childclose = "childclose"  ref = "child"></projectapply>-->
+
   </div>
 
 </template>
 <script>
+// import  projectapply from '../projectapply/projectapply.vue'
   export default {
     name: 'projectlist',
+    // components:{
+    //   projectapply
+    // },
     data() {
       return {
+        realshow:"我是父子组件传来的值",
         currentDate: new Date(),
         pagesize:12,
         pagesizes:null,
         currentPage:1,
         newarr: [],
-        msg: "项目列表",
-        solution: "xinghuo-apaas-pms-solution/pms/solution/v1",  //solution = "xinghuo-apaas-pms-solution-dev/pms/solution/v1"
-        appID: "ed2c076f86834ee0bc3dfa54d0f2daf7",
-        appSecretKey: "D82AAE335BDFB4FDDB80BDDA20B064C6",
-        GetaWay_url: "http://172.29.3.76:9238/szga/",
-        accessToken: null,
+        msg: "我是父组件",
+        solution: this.COMMON.solution,  //solution = "xinghuo-apaas-pms-solution-dev/pms/solution/v1"
+        appID: this.COMMON.appID,
+        appSecretKey: this.COMMON.appSecretKey,
+        GetaWay_url: this.COMMON.GetaWay_url,
+        accessToken: this.COMMON.accessToken,
         listarr:[],
         total: null,
         pagecur: null,
+        showpage:false
       }
-    }, mounted: function () {
-      sessionStorage.setItem("access_token","fec8042f42dc48b49b01ed4de762aca3");
-      this.accessToken = sessionStorage.getItem("access_token");
+    },
+    mounted: function () {
       this.getlistnew(1, 12);
+      if(this.listarr.length>1){
+          this.showpage = true
+      }
     }, methods: {
+      clickParent(){   // 调用子组件方法
+          this.$refs.child.childreClick();
+      },
       open4() {
         this.$notify({
           title: '警告',
           message: '这是一条警告的提示消息',
           type: 'warning'
         });
+      },
+      childclose(data){ // 接收子组件传来的值
+
+           this.msg = data;
       },
       getlistnew(current, size) {
         var _this = this;
@@ -102,17 +122,11 @@
               "size": size
             }
           }), {
-            headers: {
-              'content-type': 'application/json',
-              'accessToken': this.accessToken,
-              'applyID': this.appID,
-              'requestType': "app",
-              'secretKey': this.appSecretKey,
-              'userInfo': null
-            }
+            headers:this.COMMON.headerJson
           }).then(function (response) {
             if (response.data.code == 200) {
               _this.listarr = response.data.data.records;
+
               _this.total = response.data.data.total;
               // _this.pagesizes = response.data.data.pages;
             }

@@ -13,6 +13,11 @@
               <div class="popUpbox" style="display: none;">
 
               </div>
+              <!--<el-input   placeholder="Store State Count"  v-model="this.storeCount"></el-input>-->
+              <!--<el-button type="primary" @click="addcount()">this store count add</el-button>-->
+              <!--<el-button type="primary" @click="childclose()">给父组件传值</el-button>-->
+              <!--<el-input   placeholder="父组件传给子组件的值" @keyup.enter.native="enterFN" v-model="this.realshow"></el-input>-->
+
               <p class="itemDes"> 项目立项申请<br/><span>（添加项目）</span></p>
 
               <ul class="ProgrammeList">
@@ -152,9 +157,12 @@
 </template>
 
 <script>
+import store from '../store/store'
 
   export default {
     name: "projectapply",
+    props:["realshow"],
+    components:{store},
     data() {
       return {
         msg: "详情页面",
@@ -166,23 +174,44 @@
         listarr: [],
         btnhtml: [],     // 提交按钮
         imageUrl: '',    // 文件地址
-        fileArr: null     // 文件流
+        fileArr: null,     // 文件流
+        childValue:"子组件传的值",
+        storeCount:store.state.count
       }
+    },mounted:function () {
+      console.log(this.COMMON.solution)
+      console.log("Vuex State ",store.getters.dateFormat)
+      this.$nextTick(function () {
+              this.$on('childreClick',function () {
+                        alert("监听")
+              })
+      })
+
+        this.edit_add();
+
     }, methods: {
+      addcount(data){
+        // store.commit('addCount')
+        store.dispatch('asyncAdd')
+        this.storeCount = store.state.count;
+      },
+      childreClick(){
+            alert("调用成功")
+      },
+      enterFN(){
+          alert("回车事件")
+      },
+      childclose(){
+        this.$emit("childclose",this.childValue) // 给父组件传值
+          // console.log(this.realshow)
+      },
       InitbuildUnit() {  // 进入新增页面自动 获取开发单位和建设单位
         var _this = this;
         this.$http.post(this.$route.query.GetaWay_url + this.$route.query.solution + "/projectinfo/getBuildUnitLeader",
           JSON.stringify({
             "accessToken": this.$route.query.accessToken,
           }), {
-            headers: {
-              'content-type': 'application/json',
-              'accessToken': this.$route.query.accessToken,
-              'applyID': this.$route.query.appID,
-              'requestType': "app",
-              'secretKey': this.$route.query.appSecretKey,
-              'userInfo': null
-            }
+            headers:this.COMMON.headerJson
           }).then(function (response) {
           if (response.data.code == 200) {
             _this.staffvalue = response.data.data;
@@ -265,14 +294,7 @@
             "buildUnit": null,
             "remark": "备注",
           }), {
-            headers: {
-              'content-type': 'application/json',
-              'accessToken': this.$route.query.accessToken,
-              'applyID': this.$route.query.appID,
-              'requestType': "app",
-              'secretKey': this.$route.query.appSecretKey,
-              'userInfo': null
-            }
+            headers:this.COMMON.headerJson
           }).then(function (response) {
           if (response.data.code == 200) {
             _this.successid = response.data.data;
@@ -310,14 +332,7 @@
               "id": this.$route.query.id
             }
           }), {
-            headers: {
-              'content-type': 'application/json',
-              'accessToken': this.$route.query.accessToken,
-              'applyID': this.$route.query.appID,
-              'requestType': "app",
-              'secretKey': this.$route.query.appSecretKey,
-              'userInfo': null
-            }
+            headers:this.COMMON.headerJson
           }).then(function (response) {
           if (response.data.code == 200) {
             _this.listarr = response.data.data;
@@ -343,14 +358,7 @@
         formData.append("file", file);
         formData.append("serviceID", "f3295b7e695145509ce6f55de679f1e1");
         this.$http.post(this.$route.query.GetaWay_url + 'xinghuo-apaas-fileservice/breakMultiUploads', formData, {
-          headers: {
-            'mimeType': 'multipart/form-data',
-            'accessToken': this.$route.query.accessToken,
-            'applyID': this.$route.query.appID,
-            'requestType': "app",
-            'secretKey': this.$route.query.appSecretKey,
-            'userInfo': null
-          }
+          headers:this.COMMON.headerJson
         }).then(function (response) {
           if (response.data.code == 200) {
             _this.fileArr = response.data.result[0].data.fileUrl
@@ -387,14 +395,18 @@
           this.isShow = true
         }, 1000);
       }
-    }, created: function () {
-      // this.openFullScreen2();
-      this.edit_add();
-      // if(this.$route.query.flag==0){
-      //   this.getDesdata();
-      // }
-
     }
+    // , created: function () {
+    //   // this.openFullScreen2();
+    //   this.edit_add();
+    //
+    //   // alert(this.realshow)
+    //
+    //   // if(this.$route.query.flag==0){
+    //   //   this.getDesdata();
+    //   // }
+    //
+    // }
 
   }
 
